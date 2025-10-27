@@ -36,13 +36,6 @@ public class Product {
     )
     private Set<ImageModel> productImages;
 
-
-
-
-
-
-
-
     private Set<String> imageUrls;
 
 

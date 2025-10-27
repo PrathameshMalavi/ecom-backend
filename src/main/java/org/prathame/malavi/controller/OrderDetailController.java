@@ -22,7 +22,7 @@ public class OrderDetailController {
 
     @POST
     @Path("/placeOrder/{isSingleProductCheckout}")
-    @RolesAllowed("User")
+    @RolesAllowed("user")
     public void placeOrder(@PathParam("isSingleProductCheckout") boolean isSingleProductCheckout,
                            OrderInput orderInput) {
         orderDetailService.placeOrder(orderInput, isSingleProductCheckout);
@@ -30,28 +30,28 @@ public class OrderDetailController {
 
     @GET
     @Path("/getOrderDetails")
-    @RolesAllowed("User")
+    @RolesAllowed("user")
     public List<OrderDetail> getOrderDetails() {
         return orderDetailService.getOrderDetails();
     }
 
     @GET
     @Path("/getAllOrderDetails/{status}")
-    @RolesAllowed("Admin")
+    @RolesAllowed("admin")
     public List<OrderDetail> getAllOrderDetails(@PathParam("status") String status) {
         return orderDetailService.getAllOrderDetails(status);
     }
 
     @GET
     @Path("/markOrderAsDelivered/{orderId}")
-    @RolesAllowed("Admin")
+    @RolesAllowed("admin")
     public void markOrderAsDelivered(@PathParam("orderId") Integer orderId) {
         orderDetailService.markOrderAsDelivered(orderId);
     }
 
     @GET
     @Path("/createTransaction/{amount}")
-    @RolesAllowed("User")
+    @RolesAllowed("user")
     public TransactionDetails createTransaction(@PathParam("amount") Double amount) {
         return orderDetailService.createTransaction(amount);
     }

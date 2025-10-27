@@ -2,7 +2,7 @@ package org.prathame.malavi.service;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import org.prathame.malavi.configuration.JwtRequestFilter;
+import org.prathame.malavi.Common.KeycloakService;
 import org.prathame.malavi.dao.CartDao;
 import org.prathame.malavi.dao.ProductDao;
 import org.prathame.malavi.dao.UserDao;
@@ -23,6 +23,9 @@ public class CartService {
     ProductDao productDao;
 
     @Inject
+    KeycloakService keycloak;
+
+    @Inject
     UserDao userDao;
 
     public void deleteCartItem(Integer cartId) {
@@ -32,7 +35,7 @@ public class CartService {
     public Cart addToCart(Integer productId) {
         Product product = productDao.findById(productId);
 
-        String username = JwtRequestFilter.CURRENT_USER;
+        String username = keycloak.getUsername();
 
         User user = null;
         if (username != null) {
@@ -57,7 +60,7 @@ public class CartService {
     }
 
     public List<Cart> getCartDetails() {
-        String username = JwtRequestFilter.CURRENT_USER;
+        String username = keycloak.getUsername();
         User user = userDao.findById(username);
         return cartDao.findByUser(user);
     }

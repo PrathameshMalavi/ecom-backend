@@ -2,6 +2,7 @@ package org.prathame.malavi.dao;
 
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.transaction.Transactional;
 import org.prathame.malavi.entity.Product;
 
 
@@ -41,4 +42,27 @@ public class ProductDao implements PanacheRepository<Product> {
     public Product findById(Integer productId) {
         return find("id", productId).firstResult();
     }
+
+    @Transactional
+    public void updateProduct(Long id, Product updatedProduct) {
+        // Fetch existing product
+        Product existing = findById(id);
+        if (existing == null) {
+            throw new RuntimeException("Product not found with id: " + id);
+        }
+
+        // Update fields (example)
+        existing.setProductName(updatedProduct.getProductName());
+        existing.setProductActualPrice(updatedProduct.getProductActualPrice());
+        existing.setProductDiscountedPrice(updatedProduct.getProductDiscountedPrice());
+        existing.setProductDescription(updatedProduct.getProductDescription());
+        existing.setProductImages(updatedProduct.getProductImages());
+        existing.setImageUrls(updatedProduct.getImageUrls());
+        // Add any other fields as needed
+
+        persist(existing);
+    }
+
+    // Update existing product
+
 }

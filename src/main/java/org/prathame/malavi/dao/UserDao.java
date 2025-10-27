@@ -27,6 +27,16 @@ public class UserDao implements PanacheRepository<User> {
      * Delete user by username
      */
     public void deleteById(String username) {
-        delete("id", username);
+        delete("userName", username);
+    }
+
+
+
+    public boolean existsByKeycloakId(String id) {
+        return find("keycloakId", id).firstResultOptional().isPresent();
+    }
+
+    public User findByKeycloakId(String id) {
+        return find("keycloakId", id).firstResult();
     }
 }

@@ -21,21 +21,21 @@ public class CartController {
 
     @GET
     @Path("/addToCart/{productId}")
-    @RolesAllowed("User")
+    @RolesAllowed("user")
     public Cart addToCart(@PathParam("productId") Integer productId) {
         return cartService.addToCart(productId);
     }
 
     @DELETE
     @Path("/deleteCartItem/{cartId}")
-    @RolesAllowed("User")
+    @RolesAllowed("user")
     public void deleteCartItem(@PathParam("cartId") Integer cartId) {
         cartService.deleteCartItem(cartId);
     }
 
     @GET
     @Path("/getCartDetails")
-    @RolesAllowed("User")
+    @RolesAllowed("user")
     public List<Cart> getCartDetails() {
         return cartService.getCartDetails();
     }

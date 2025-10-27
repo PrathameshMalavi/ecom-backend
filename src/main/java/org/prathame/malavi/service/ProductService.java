@@ -3,7 +3,7 @@ package org.prathame.malavi.service;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
-import org.prathame.malavi.configuration.JwtRequestFilter;
+import org.prathame.malavi.Common.KeycloakService;
 import org.prathame.malavi.dao.CartDao;
 import org.prathame.malavi.dao.ProductDao;
 import org.prathame.malavi.dao.UserDao;
@@ -26,11 +26,21 @@ public class ProductService {
     UserDao userDao;
 
     @Inject
+    KeycloakService keycloak;
+
+    @Inject
     CartDao cartDao;
 
     public Product addNewProduct(Product product) {
         productDao.persist(product);
         return product;
+    }
+
+
+    @Transactional
+    public void updateProduct(Long id, Product updatedProduct) {
+        productDao.getEntityManager().merge(updatedProduct);
+//        productDao.updateProduct(id, updatedProduct);
     }
 
     public List<Product> getAllProducts(int pageNumber, String searchKey) {
@@ -63,7 +73,7 @@ public class ProductService {
             if (product != null) list.add(product);
             return list;
         } else {
-            String username = JwtRequestFilter.CURRENT_USER;
+            String username = keycloak.getUsername();
             User user = userDao.findById(username);
             if (user == null) return new ArrayList<>();
 

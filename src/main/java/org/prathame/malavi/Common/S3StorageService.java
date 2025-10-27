@@ -7,15 +7,14 @@ import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
 import java.io.InputStream;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.nio.file.Paths;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @ApplicationScoped
 public class S3StorageService {
@@ -28,6 +27,7 @@ public class S3StorageService {
 
 
     private final S3Client s3;
+    private String imageUrl = "";
 
     public S3StorageService() {
         s3 = S3Client.builder()
@@ -88,7 +88,7 @@ public class S3StorageService {
 
 
     // Upload single file from bytes, returns public URL
-    public String uploadFile(String bucketName, String keyName, byte[] fileBytes) {
+    public void uploadFile(String bucketName, String keyName, byte[] fileBytes) {
         PutObjectRequest request = PutObjectRequest.builder()
                 .bucket(bucketName)
                 .key(keyName)
@@ -96,8 +96,6 @@ public class S3StorageService {
                 .build();
 
         s3.putObject(request, RequestBody.fromBytes(fileBytes));
-
-        return "https://" + bucketName + ".storage.supabase.co/" + keyName;
     }
 
     public Set<String> uploadImage(List<InputPart> inputParts, String bucketName) {
@@ -109,9 +107,9 @@ public class S3StorageService {
                 byte[] imageBytes = inputStream.readAllBytes();
 
                 String keyName = "uploads/category/products/image-" + System.currentTimeMillis() + ".png"; // or generate unique file name
-
-                String publicUrl = uploadFile(bucketName, keyName, imageBytes);
-                urls.add(publicUrl);
+                String imageUrl = "https://koxigrrbqfegjofxegck.supabase.co/storage/v1/object/public/" + bucketName + "/" + keyName;
+                uploadFile(bucketName, keyName, imageBytes);
+                urls.add(imageUrl);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -122,6 +120,42 @@ public class S3StorageService {
     }
 
 
+    public void deleteFile(String fileUrl) {
+        Map<String, String> parsed = parseSupabaseUrl(fileUrl);
+        String bucket = parsed.get("bucket");
+        String key = parsed.get("key");
+
+        DeleteObjectRequest deleteRequest = DeleteObjectRequest.builder()
+                .bucket(bucket)
+                .key(key)
+                .build();
+
+        s3.deleteObject(deleteRequest);
+
+        System.out.println("Deleted: " + bucket + "/" + key);
+    }
+
+    public static Map<String, String> parseSupabaseUrl(String fileUrl) {
+        // Example: https://.../storage/v1/object/public/Ecommerce/uploads/category/products/image.png
+        String[] parts = fileUrl.split("/public/");
+        if (parts.length < 2) {
+            throw new IllegalArgumentException("Invalid Supabase storage URL: " + fileUrl);
+        }
+
+        String path = parts[1]; // Ecommerce/uploads/category/products/image.png
+        int firstSlash = path.indexOf("/");
+        if (firstSlash == -1) {
+            throw new IllegalArgumentException("Invalid Supabase storage URL structure.");
+        }
+
+        String bucketName = path.substring(0, firstSlash);
+        String keyName = path.substring(firstSlash + 1);
+
+        Map<String, String> map = new HashMap<>();
+        map.put("bucket", bucketName);
+        map.put("key", keyName);
+        return map;
+    }
 
 //For Public Acess
 //    public boolean uploadFile(InputStream fileStream, String fileName, String contentType) {

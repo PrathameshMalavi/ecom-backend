@@ -42,7 +42,7 @@ public class ProductController {
     @Inject
     S3StorageService s3StorageService;
 
-    //    @RolesAllowed("Admin")
+    @RolesAllowed("admin")
     @POST
     @Path("/addNewProduct")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
@@ -70,11 +70,23 @@ public class ProductController {
             List<InputPart> imageParts = uploadForm.get("imageFile");
 
             Set<String> imgUrls = uploadImageS3(imageParts);
-            product.setImageUrls(imgUrls);
 
             Set<ImageModel> images = uploadImage(imageParts);
-            product.setProductImages(images);
-            return productService.addNewProduct(product);
+
+
+            Product temp;
+            if(product.getProductId() != null){
+                Set<String> extImgUrl = product.getImageUrls();
+                extImgUrl.addAll(imgUrls);
+                product.setImageUrls(extImgUrl);
+                productService.updateProduct(product.getProductId().longValue(), product);
+                temp = product;
+            }else{
+                product.setImageUrls(imgUrls);
+                product.setProductImages(images);
+                temp = productService.addNewProduct(product);
+            }
+            return temp;
         } catch (Exception e) {
             System.out.println(e.getMessage());
             return null;
@@ -154,14 +166,14 @@ public class ProductController {
         return productService.getProductDetailsById(productId);
     }
 
-    @RolesAllowed("Admin")
+    @RolesAllowed("admin")
     @DELETE
     @Path("/deleteProductDetails/{productId}")
     public void deleteProductDetails(@PathParam("productId") Integer productId) {
         productService.deleteProductDetails(productId);
     }
 
-    @RolesAllowed("User")
+    @RolesAllowed("user")
     @GET
     @Path("/getProductDetails/{isSingleProductCheckout}/{productId}")
     @Produces(MediaType.APPLICATION_JSON)

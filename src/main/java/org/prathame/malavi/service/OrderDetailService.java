@@ -6,7 +6,7 @@ import jakarta.inject.Inject;
 import jakarta.json.JsonObject;
 import jakarta.transaction.Transactional;
 import org.jose4j.json.internal.json_simple.JSONObject;
-import org.prathame.malavi.configuration.JwtRequestFilter;
+import org.prathame.malavi.Common.KeycloakService;
 import org.prathame.malavi.dao.CartDao;
 import org.prathame.malavi.dao.OrderDetailDao;
 import org.prathame.malavi.dao.ProductDao;
@@ -33,6 +33,11 @@ public class OrderDetailService {
     @Inject
     ProductDao productDao;
 
+
+    @Inject
+    KeycloakService keycloak;
+
+
     @Inject
     UserDao userDao;
 
@@ -52,7 +57,7 @@ public class OrderDetailService {
     }
 
     public List<OrderDetail> getOrderDetails() {
-        String currentUser = JwtRequestFilter.CURRENT_USER;
+        String currentUser = keycloak.getUsername();
         User user = userDao.findById(currentUser);
         return orderDetailDao.findByUser(user);
     }
@@ -64,7 +69,7 @@ public class OrderDetailService {
         for (OrderProductQuantity o : productQuantityList) {
             Product product = productDao.findById(o.getProductId());
 
-            String currentUser = JwtRequestFilter.CURRENT_USER;
+            String currentUser = keycloak.getUsername();
             User user = userDao.findById(currentUser);
 
             OrderDetail orderDetail = new OrderDetail(

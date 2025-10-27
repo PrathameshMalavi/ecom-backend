@@ -25,16 +25,36 @@ public class User {
     @Column(name = "last_name")
     private String userLastName;
 
-    @Column(name = "password")
-    private String userPassword;
+    @Column(unique = true)
+    public String keycloakId;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinTable(
-            name = "user_role",
-            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "user_name"), // Changed
-//            joinColumns = @JoinColumn(name = "user_name", referencedColumnName = "userName"),
-            inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "roleName")
-    )
-    private Set<Role> role;
+    @Column
+    public String role;
+
+
+
+
+
+//    @Column(unique = true)
+//    public String username;
+
+//    @Column
+//    public String email;
+
+
+
+//    @Column(name = "password")
+//    private String userPassword;
+//
+
+
+//    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+//    @JoinTable(
+//            name = "user_role",
+//            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "user_name"), // Changed
+////            joinColumns = @JoinColumn(name = "user_name", referencedColumnName = "userName"),
+//            inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "roleName")
+//    )
+//    private Set<Role> role;
 
 }
