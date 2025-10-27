@@ -17,12 +17,12 @@ public class Cart {
     private Integer cartId;
 
     @OneToOne
-    @JoinColumn(name = "product_id", referencedColumnName = "productId")
+    @JoinColumn(name = "product_id", referencedColumnName = "productId", unique = false)
     private Product product;
 
     @OneToOne
 //    @JoinColumn(name = "user_name", referencedColumnName = "userName")
-    @JoinColumn(name = "user_name", referencedColumnName = "user_name") // Changed
+    @JoinColumn(name = "user_name", referencedColumnName = "user_name", unique = false, nullable = false) // Changed
     private User user;
 
 

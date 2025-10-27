@@ -3,7 +3,7 @@ package org.prathame.malavi.service;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
-import org.prathame.malavi.Common.KeycloakService;
+import org.prathame.malavi.common.KeycloakService;
 import org.prathame.malavi.dao.CartDao;
 import org.prathame.malavi.dao.ProductDao;
 import org.prathame.malavi.dao.UserDao;

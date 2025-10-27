@@ -1,4 +1,4 @@
-package org.prathame.malavi.Common;
+package org.prathame.malavi.common;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
@@ -13,7 +13,6 @@ import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.http.HttpClient;
-import java.nio.file.Paths;
 import java.util.*;
 
 @ApplicationScoped
@@ -118,6 +117,23 @@ public class S3StorageService {
 
         return urls;
     }
+
+    public String uploadSingleImage(InputPart inputPart, String bucketName) {
+        try{
+            InputStream inputStream = inputPart.getBody(InputStream.class, null);
+            byte[] imageBytes = inputStream.readAllBytes();
+
+            String keyName = "uploads/category/products/image-" + System.currentTimeMillis() + ".png"; // or generate unique file name
+            String imageUrl = "https://koxigrrbqfegjofxegck.supabase.co/storage/v1/object/public/" + bucketName + "/" + keyName;
+            uploadFile(bucketName, keyName, imageBytes);
+            return  imageUrl;
+        } catch (Exception e) {
+            e.printStackTrace();
+            // Handle errors appropriately in your context
+        }
+        return null;
+    }
+
 
 
     public void deleteFile(String fileUrl) {

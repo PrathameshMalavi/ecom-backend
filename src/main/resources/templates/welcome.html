@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Welcome to Ecommm!</title>
+    <style>
+    .container {
+      max-width: 600px;
+      margin: 20px auto;
+      background: #fff;
+      border-radius: 8px;
+      padding: 32px 24px;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      box-shadow: 0 3px 18px rgba(60,60,90,0.12);
+      color: #222;
+    }
+    .header {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+    .button {
+      background: #0275d8;
+      color: #fff;
+      padding: 12px 32px;
+      border-radius: 6px;
+      text-decoration: none;
+      display: inline-block;
+      font-weight: bold;
+      margin-top: 24px;
+    }
+    .footer {
+      font-size: 13px;
+      color: #888;
+      text-align: center;
+      margin-top: 32px;
+    }
+  </style>
+</head>
+<body style="background:#f6f8fb">
+<div class="container">
+    <div class="header">
+        <!-- If you want, add a logo here -->
+        <h1>Welcome to <span style="color:#0275d8">Ecommm</span>!</h1>
+    </div>
+    <p>Hello <strong>{userName}</strong>,</p>
+    <p>
+        Thanks for joining <b>Ecommm</b>. We're excited to have you on board.<br>
+        Start exploring exclusive products and deals today!
+    </p>
+    <div style="text-align:center;">
+        <a class="button" href="{appUri}">Go to Ecommm</a>
+    </div>
+    <div class="footer">
+        <p>This message was sent from <a href="mailto:{mailFrom}">{mailFrom}</a>.</p>
+        <p>© 2025 Ecommm Team</p>
+    </div>
+</div>
+</body>
+</html>

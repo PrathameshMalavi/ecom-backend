@@ -1,12 +1,11 @@
-package org.prathame.malavi;
-
-import jakarta.ws.rs.OPTIONS;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.core.Response;
-
+//package org.prathame.malavi;
+//
+//import jakarta.ws.rs.OPTIONS;
+//import jakarta.ws.rs.Path;
+//import jakarta.ws.rs.core.Response;
+//
 //@Path("/")
 //public class PreflightResource {
-//
 //
 //    @OPTIONS
 //    public Response preflight() {

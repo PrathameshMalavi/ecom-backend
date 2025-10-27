@@ -29,7 +29,7 @@ public class OrderDetailController {
     }
 
     @GET
-    @Path("/getOrderDetails")
+    @Path("/getAllOrderDetails")
     @RolesAllowed("user")
     public List<OrderDetail> getOrderDetails() {
         return orderDetailService.getOrderDetails();

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Order Confirmation</title>
+    <style>
+    .container { max-width:600px; margin:20px auto; background:#fff; border-radius:8px; padding:32px 24px; font-family:'Segoe UI', Arial, sans-serif; box-shadow:0 3px 18px rgba(60,60,90,0.12); color:#222; }
+    .header { text-align:center; margin-bottom:24px; }
+    .footer { font-size:13px; color:#888; text-align:center; margin-top:32px; }
+  </style>
+</head>
+<body style="background:#f6f8fb">
+<div class="container">
+    <div class="header">
+        <h1>Order #{orderId} Placed Successfully!</h1>
+    </div>
+    <p>Hello <strong>{userName}</strong>,</p>
+    <p>
+        Thank you for your order. We have received your order <b>#{orderId}</b> and will process it soon.<br>
+        We’ll notify you once it is shipped.
+    </p>
+    <div class="footer">
+        <p>This message was sent from <a href="mailto:{mailFrom}">{mailFrom}</a>.</p>
+        <p>© 2025 Ecommm</p>
+    </div>
+</div>
+</body>
+</html>

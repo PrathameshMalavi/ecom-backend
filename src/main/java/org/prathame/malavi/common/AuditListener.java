@@ -1,4 +1,4 @@
-package org.prathame.malavi.Common;
+package org.prathame.malavi.common;
 
 import io.quarkus.security.identity.SecurityIdentity;
 import jakarta.inject.Inject;

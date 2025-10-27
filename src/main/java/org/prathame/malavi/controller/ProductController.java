@@ -1,7 +1,5 @@
 package org.prathame.malavi.controller;
 
-import io.netty.handler.codec.http.multipart.FileUpload;
-import io.quarkus.security.Authenticated;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.json.bind.JsonbBuilder;
@@ -9,25 +7,15 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
-import org.prathame.malavi.Common.S3StorageService;
+import org.prathame.malavi.common.S3StorageService;
 import org.prathame.malavi.entity.ImageModel;
 import org.prathame.malavi.entity.Product;
 import org.prathame.malavi.service.ProductService;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Type;
-import java.nio.file.StandardCopyOption;
 import java.util.*;
 
-import jakarta.annotation.security.RolesAllowed;
-import jakarta.inject.Inject;
-import jakarta.ws.rs.*;
-import jakarta.ws.rs.core.MediaType;
-
-import java.io.IOException;
-import java.nio.file.Files;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;

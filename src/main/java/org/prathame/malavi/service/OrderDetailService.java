@@ -3,10 +3,9 @@ package org.prathame.malavi.service;
 import com.razorpay.Order;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import jakarta.json.JsonObject;
 import jakarta.transaction.Transactional;
-import org.jose4j.json.internal.json_simple.JSONObject;
-import org.prathame.malavi.Common.KeycloakService;
+import org.prathame.malavi.common.KeycloakService;
+import org.prathame.malavi.common.MailService;
 import org.prathame.malavi.dao.CartDao;
 import org.prathame.malavi.dao.OrderDetailDao;
 import org.prathame.malavi.dao.ProductDao;
@@ -18,14 +17,16 @@ import java.util.List;
 
 
 import com.razorpay.RazorpayClient;
+import org.prathame.malavi.util.UserUtilty;
 
 @ApplicationScoped
 public class OrderDetailService {
 
     private static final String ORDER_PLACED = "Placed";
-    private static final String KEY = "rzp_test_AXBzvN2fkD4ESK";
-    private static final String KEY_SECRET = "bsZmiVD7p1GMo6hAWiy4SHSH";
+    private static final String RAZOR_PAY_KEY = "rzp_test_RYQrZWZnEz52RQ";
+    private static final String RAZOR_PAY_KEY_SECRET = "4hq0ISZTg0t6YuMGB7cLrEHN";
     private static final String CURRENCY = "INR";
+
 
     @Inject
     OrderDetailDao orderDetailDao;
@@ -44,6 +45,9 @@ public class OrderDetailService {
     @Inject
     CartDao cartDao;
 
+    @Inject
+    MailService mailService;
+
     public List<OrderDetail> getAllOrderDetails(String status) {
         List<OrderDetail> orderDetails = new ArrayList<>();
 
@@ -57,6 +61,7 @@ public class OrderDetailService {
     }
 
     public List<OrderDetail> getOrderDetails() {
+        System.out.println("Get Order Requested :: ");
         String currentUser = keycloak.getUsername();
         User user = userDao.findById(currentUser);
         return orderDetailDao.findByUser(user);
@@ -90,6 +95,8 @@ public class OrderDetailService {
                 carts.forEach(x -> cartDao.deleteById(x.getCartId()));
             }
 
+
+            mailService.sendOrderDeliveredMail(user.getUserName() , UserUtilty.getUserFullName(user.getUserFirstName() , user.getUserLastName()), orderDetail.getTransactionId());
             orderDetailDao.persist(orderDetail);
         }
     }
@@ -97,9 +104,11 @@ public class OrderDetailService {
     @Transactional
     public void markOrderAsDelivered(Integer orderId) {
         OrderDetail orderDetail = orderDetailDao.findById(orderId.longValue());
+        User user = orderDetail.getUser();
 
         if (orderDetail != null) {
             orderDetail.setOrderStatus("Delivered");
+            mailService.sendOrderDeliveredMail(user.getUserName() , UserUtilty.getUserFullName(user.getUserFirstName() , user.getUserLastName()), orderDetail.getTransactionId());
             orderDetailDao.persist(orderDetail);
 //            orderDetailDao.save(orderDetail);
         }
@@ -111,7 +120,7 @@ public class OrderDetailService {
             jsonObject.put("amount", (amount * 100));
             jsonObject.put("currency", CURRENCY);
 
-            RazorpayClient razorpayClient = new RazorpayClient(KEY, KEY_SECRET);
+            RazorpayClient razorpayClient = new RazorpayClient(RAZOR_PAY_KEY, RAZOR_PAY_KEY_SECRET);
             Order order = razorpayClient.orders.create(jsonObject);
 
             return prepareTransactionDetails(order);
@@ -126,6 +135,6 @@ public class OrderDetailService {
         String currency = order.get("currency");
         Integer amount = order.get("amount");
 
-        return new TransactionDetails(orderId, currency, amount, KEY);
+        return new TransactionDetails(orderId, currency, amount, RAZOR_PAY_KEY);
     }
 }

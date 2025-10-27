@@ -27,12 +27,12 @@ public class OrderDetail {
     private Double orderAmount;
 
     @OneToOne
-    @JoinColumn(name = "product_id", referencedColumnName = "productId")
+    @JoinColumn(name = "product_id", referencedColumnName = "productId", unique = false, nullable = false)
     private Product product;
 
     @OneToOne
 //    @JoinColumn(name = "user_name", referencedColumnName = "userName")
-    @JoinColumn(name = "user_name", referencedColumnName = "user_name") // Changed
+    @JoinColumn(name = "user_name", referencedColumnName = "user_name", unique = false, nullable = false) // Changed
     private User user;
 
     private String transactionId;

@@ -2,7 +2,8 @@ package org.prathame.malavi.service;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import org.prathame.malavi.Common.KeycloakService;
+import jakarta.transaction.Transactional;
+import org.prathame.malavi.common.KeycloakService;
 import org.prathame.malavi.dao.CartDao;
 import org.prathame.malavi.dao.ProductDao;
 import org.prathame.malavi.dao.UserDao;
@@ -28,10 +29,12 @@ public class CartService {
     @Inject
     UserDao userDao;
 
+    @Transactional
     public void deleteCartItem(Integer cartId) {
         cartDao.deleteById(cartId);
     }
 
+    @Transactional
     public Cart addToCart(Integer productId) {
         Product product = productDao.findById(productId);
 
@@ -58,6 +61,7 @@ public class CartService {
 
         return null;
     }
+
 
     public List<Cart> getCartDetails() {
         String username = keycloak.getUsername();
