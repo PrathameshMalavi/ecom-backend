@@ -12,6 +12,7 @@ import org.prathame.malavi.dao.ProductDao;
 import org.prathame.malavi.dao.UserDao;
 import org.prathame.malavi.entity.*;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -86,7 +87,8 @@ public class OrderDetailService {
                     product.getProductDiscountedPrice() * o.getQuantity(),
                     product,
                     user,
-                    orderInput.getTransactionId()
+                    orderInput.getTransactionId(),
+                    LocalDate.now()
             );
 
             // empty the cart if not single product checkout

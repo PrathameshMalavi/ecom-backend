@@ -43,7 +43,8 @@ public class OrderDetailController {
     }
 
     @GET
-    @Path("/markOrderAsDelivered/{orderId}")
+    @Path("/markAsDelivered/{orderId}")
+//    @Path("/markOrderAsDelivered/{orderId}")
     @RolesAllowed("admin")
     public void markOrderAsDelivered(@PathParam("orderId") Integer orderId) {
         orderDetailService.markOrderAsDelivered(orderId);
