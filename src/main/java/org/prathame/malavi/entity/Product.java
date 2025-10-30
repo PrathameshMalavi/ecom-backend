@@ -27,6 +27,7 @@ public class Product {
     private Double productDiscountedPrice;
 
     private Double productActualPrice;
+    private Double productPrevActualPrice;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(

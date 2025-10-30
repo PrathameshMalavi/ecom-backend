@@ -13,6 +13,7 @@ import org.prathame.malavi.dao.UserDao;
 import org.prathame.malavi.entity.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,6 +25,12 @@ import org.prathame.malavi.util.UserUtilty;
 public class OrderDetailService {
 
     private static final String ORDER_PLACED = "Placed";
+    private static final String ORDER_Shipped = "Shipped";
+    private static final String ORDER_ReachedFinalDestination = "ReachedFinalDestination";
+    private static final String ORDER_Delivered = "Delivered";
+
+
+
     private static final String RAZOR_PAY_KEY = "rzp_test_RYQrZWZnEz52RQ";
     private static final String RAZOR_PAY_KEY_SECRET = "4hq0ISZTg0t6YuMGB7cLrEHN";
     private static final String CURRENCY = "INR";
@@ -104,15 +111,57 @@ public class OrderDetailService {
     }
 
     @Transactional
+    public void markOrderAsShipped(Integer orderId) {
+        OrderDetail orderDetail = orderDetailDao.findById(orderId.longValue());
+        User user = orderDetail.getUser();
+
+        if (orderDetail != null) {
+            orderDetail.setOrderStatus(ORDER_Shipped);
+            mailService.sendOrderShippedMail(user.getUserName() , UserUtilty.getUserFullName(user.getUserFirstName() , user.getUserLastName()), orderDetail.getProduct().getProductName() ,"http://localhost:4200/user/myOrders");
+            orderDetailDao.persist(orderDetail);
+        }
+    }
+
+
+    @Transactional
+    public void addTrackingOrder(Integer orderId, OrderTrack orderTrack) {
+        OrderDetail orderDetail = orderDetailDao.findById(orderId.longValue());
+        User user = orderDetail.getUser();
+        if (orderDetail != null) {
+            orderTrack.setOrder(orderDetail);
+            orderTrack.setDate(LocalDateTime.now());
+            OrderTrack.persist(orderTrack);
+        }
+    }
+
+    @Transactional
+    public List<OrderTrack> getOrderTrackList(Integer orderId) {
+//        return  OrderTrack.list("order.orderId", orderId);
+        return  OrderTrack.list("order.orderId = ?1 ORDER BY date ASC", orderId);
+    }
+
+    @Transactional
+    public void markOrderAsReachedDestination(Integer orderId) {
+        OrderDetail orderDetail = orderDetailDao.findById(orderId.longValue());
+        User user = orderDetail.getUser();
+
+        if (orderDetail != null) {
+            orderDetail.setOrderStatus(ORDER_ReachedFinalDestination);
+            orderDetailDao.persist(orderDetail);
+
+        }
+    }
+
+
+    @Transactional
     public void markOrderAsDelivered(Integer orderId) {
         OrderDetail orderDetail = orderDetailDao.findById(orderId.longValue());
         User user = orderDetail.getUser();
 
         if (orderDetail != null) {
-            orderDetail.setOrderStatus("Delivered");
+            orderDetail.setOrderStatus(ORDER_Delivered);
             mailService.sendOrderDeliveredMail(user.getUserName() , UserUtilty.getUserFullName(user.getUserFirstName() , user.getUserLastName()), orderDetail.getTransactionId());
             orderDetailDao.persist(orderDetail);
-//            orderDetailDao.save(orderDetail);
         }
     }
 
